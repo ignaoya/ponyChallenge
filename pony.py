@@ -14,7 +14,7 @@ def get_maze_id(url, data):
     except: 
         failed_conn = True
     while failed_conn or r.status_code != 200:
-        print("Failed connection. Retrying...")
+        print("#get_maze_id# Failed connection. Retrying...")
         try:
             r = requests.post(url=url, json=data)
             failed_conn = False
@@ -29,7 +29,7 @@ def get_maze_state(maze_url):
     except:
         failed_conn = True
     while failed_conn or r.status_code != 200:
-        print("Failed connection. Retrying...")
+        print("#get_maze_state# Failed connection. Retrying...")
         try:
             r = requests.get(url = maze_url)
             failed_conn = False
