@@ -7,22 +7,20 @@ data = {"maze-width": 15,
         "maze-player-name": "Applejack",
         "difficulty": 0}
 
-try:
-    r = requests.post(url = url, json = data)
-    failed_conn = False
-except: 
-    failed_conn = True
-while failed_conn or r.status_code != 200:
-    print("Failed connection. Retrying...")
+def get_maze_id(url, data):
     try:
-        r = requests.post(url=url, json=data)
+        r = requests.post(url = url, json = data)
         failed_conn = False
     except: 
         failed_conn = True
-
-maze_id = r.json()["maze_id"]
-
-maze_url = '/'.join([url, maze_id])
+    while failed_conn or r.status_code != 200:
+        print("Failed connection. Retrying...")
+        try:
+            r = requests.post(url=url, json=data)
+            failed_conn = False
+        except: 
+            failed_conn = True
+    return r
 
 def get_maze_state(maze_url):
     try:
@@ -38,8 +36,6 @@ def get_maze_state(maze_url):
         except:
             failed_conn = True
     return r.json()
-
-maze = get_maze_state(maze_url)
 
 def get_moves(pos, maze, width):
     moves = []
@@ -128,9 +124,6 @@ def find_route(maze):
             pos += 1
         route_pos.append(pos)
     return route, route_pos
-        
-
-route, route_pos = find_route(maze)
 
 def post_move(maze_url, move):
     data = {'direction': move}
@@ -174,3 +167,12 @@ def start_game(maze_url, route, route_pos, maze):
            route, route_pos = find_route(maze) 
         post_move(maze_url, route.pop(0))
         pos = route_pos.pop(0)
+
+
+if __name__ == '__main__':
+    maze_id = get_maze_id(url, data).json()["maze_id"]
+    maze_url = '/'.join([url, maze_id])
+    maze = get_maze_state(maze_url)
+    route, route_pos = find_route(maze)
+    start_game(maze_url, route, route_pos, maze)
+
