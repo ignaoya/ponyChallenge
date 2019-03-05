@@ -71,5 +71,15 @@ class TestGetMoves(unittest.TestCase):
         self.assertIn('south', moves_a)
         self.assertNotIn('south', moves_b)
 
+class TestGetFullMapMoves(unittest.TestCase):
+
+    def setUp(self):
+        self.maze = {'data':[['north','west'],['north','west'],['west'],[]], 'size':[2]}
+
+    def test_length_size(self):
+        moves = get_full_map_moves(self.maze)
+
+        self.assertEqual(len(moves), 4)
+
 if __name__ == '__main__':
     unittest.main()
