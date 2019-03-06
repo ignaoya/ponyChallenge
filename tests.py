@@ -79,7 +79,19 @@ class TestGetFullMapMoves(unittest.TestCase):
     def test_length_size(self):
         moves = get_full_map_moves(self.maze)
 
-        self.assertEqual(len(moves), 4)
+        self.assertEqual(len(moves), len(self.maze['data']))
+
+class TestFindeRoute(unittest.TestCase):
+
+    def setUp(self):
+        self.maze = {'data':[['north', 'west'],['north','west'],['west'],['north']], 'size':[2], 'pony':[0], 
+                     'end-point':[3], 'domokun':[1]}
+
+    def test_finds_end_point(self):
+        route, route_pos = find_route(self.maze)
+        correct_route = ['south', 'east']
+
+        self.assertEqual(route, correct_route)
 
 if __name__ == '__main__':
     unittest.main()

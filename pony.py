@@ -174,5 +174,5 @@ if __name__ == '__main__':
     maze_url = '/'.join([url, maze_id])
     maze = get_maze_state(maze_url)
     route, route_pos = find_route(maze)
-    start_game(maze_url, route, route_pos, maze)
+    #start_game(maze_url, route, route_pos, maze)
 
