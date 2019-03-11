@@ -28,15 +28,14 @@ class TestGetMazeState(unittest.TestCase):
 class TestGetMoves(unittest.TestCase):
 
     def setUp(self):
-        self.maze = {'data':[['north','west'],['north','west'],['west'],[]]}
-        self.width = 2
+        self.maze = {'data':[['north','west'],['north','west'],['west'],[]], 'size':[2]}
 
     def test_west(self):
         pos_a = 3
         pos_b = 2
 
-        moves_a = get_moves(pos_a, self.maze, self.width)
-        moves_b = get_moves(pos_b, self.maze, self.width)
+        moves_a = get_moves(pos_a, self.maze)
+        moves_b = get_moves(pos_b, self.maze)
 
         self.assertIn('west', moves_a)
         self.assertNotIn('west', moves_b)
@@ -45,8 +44,8 @@ class TestGetMoves(unittest.TestCase):
         pos_a = 2
         pos_b = 0
 
-        moves_a = get_moves(pos_a, self.maze, self.width)
-        moves_b = get_moves(pos_b, self.maze, self.width)
+        moves_a = get_moves(pos_a, self.maze)
+        moves_b = get_moves(pos_b, self.maze)
 
         self.assertIn('north', moves_a)
         self.assertNotIn('north', moves_b)
@@ -55,8 +54,8 @@ class TestGetMoves(unittest.TestCase):
         pos_a = 2
         pos_b = 0
 
-        moves_a = get_moves(pos_a, self.maze, self.width)
-        moves_b = get_moves(pos_b, self.maze, self.width)
+        moves_a = get_moves(pos_a, self.maze)
+        moves_b = get_moves(pos_b, self.maze)
 
         self.assertIn('east', moves_a)
         self.assertNotIn('east', moves_b)
@@ -65,8 +64,8 @@ class TestGetMoves(unittest.TestCase):
         pos_a = 0
         pos_b = 2
 
-        moves_a = get_moves(pos_a, self.maze, self.width)
-        moves_b = get_moves(pos_b, self.maze, self.width)
+        moves_a = get_moves(pos_a, self.maze)
+        moves_b = get_moves(pos_b, self.maze)
 
         self.assertIn('south', moves_a)
         self.assertNotIn('south', moves_b)
@@ -81,17 +80,27 @@ class TestGetFullMapMoves(unittest.TestCase):
 
         self.assertEqual(len(moves), len(self.maze['data']))
 
+class TestDomokunPossibleMoves(unittest.TestCase):
+
+    def setUp(self):
+        self.maze = {'data':[['north', 'west'],['north','west'],['north'],['west'],['west'],['west'],['west'],[],[]],
+                     'size':[3,3], 'pony':[0], 'end-point':[6], 'domokun':[2]}
+
+    def test_domo_pos(self):
+        domo = domokun_possible_pos(self.maze)
+
+        self.assertIn(2, domo)
+        self.assertIn(5, domo)
+        self.assertIn(1, domo)
+        self.assertNotIn(0, domo)
+        
 class TestFindeRoute(unittest.TestCase):
 
     def setUp(self):
         self.maze = {'data':[['north', 'west'],['north','west'],['west'],['north']], 'size':[2], 'pony':[0], 
                      'end-point':[3], 'domokun':[1]}
 
-    def test_finds_end_point(self):
-        route, route_pos = find_route(self.maze)
-        correct_route = ['south', 'east']
-
-        self.assertEqual(route, correct_route)
+        
 
 if __name__ == '__main__':
     unittest.main()
