@@ -1,4 +1,5 @@
 import requests
+from random import choice
 
 url = 'https://ponychallenge.trustpilot.com/pony-challenge/maze'
 
@@ -57,10 +58,77 @@ def get_full_map_moves(maze):
         map_moves.append(moves)
     return map_moves
 
+def change_pos(pos, maze_width, direction):
+    if direction == 'north':
+        return pos - maze_width
+    elif direction == 'south':
+        return pos + maze_width
+    elif direction == 'east':
+        return pos + 1
+    elif direction == 'west':
+        return pos - 1
+
+def determine_orientation(pos, maze):
+    endpoint = maze['end-point'][0]
+    width = maze['size'][0]
+    orientation = []
+    if endpoint %  width > pos % width:
+        orientation.append('east')
+    if endpoint % width < pos % width:
+        orientation.append('west')
+    if endpoint > pos + (width - (pos % width)) - 1:
+        orientation.append('south')
+    if endpoint < pos - (pos % width):
+        orientation.append('north')
+    return orientation
+
+def clean_moves(moves, last_move)
+    if last_move == 'north':
+        moves.remove('south')
+    if last_move == 'south':
+        moves.remove('north')
+    if last_move == 'east':
+        moves.remove('west')
+    if last_move == 'west':
+        moves.remove('east')
+    return moves
+
 def find_route(maze):
-    pony = maze['pony'][0]
+    width = maze['size'][0]
+    pos = maze['pony'][0]
     endpoint = maze['end-point'][0]
     domo = domokun_possible_pos(maze)
+    map_moves = get_full_map_moves(maze)
+    route = []
+    checkpoints = []
+    last_move = None
+    paths_taken = []
+    while pos != endpoint:
+        orientation = determine_orientation(pos, maze)
+        possible_moves = clean_moves(map_moves[pos], last_move)
+        if len(possible_moves) > 1:
+            checkpoints.append({'pos': pos, 'route': route.copy(), 'last_move': last_move, 'paths_taken': []})
+        if len(possible_moves) == 0:
+            pos = checkpoints[-1]['pos']
+            route = checkpoints[-1]['route'].copy()
+            last_move = checkpoints[-1]['last_move']
+            paths_taken = checkpoints[-1]['paths_taken'].copy()
+            continue
+        if paths_taken:
+            for i in paths_taken:
+                possible_moves.remove(i)
+            paths_taken = []
+        if any((i for i in possible_moves if i in orientation)):
+            for i in possible_moves:
+                if i in orientation:
+                    route.append(i)
+                    pos = change_pos(pos, width, i)
+        else:
+            move = choice(possible_moves)
+            route.append(i)
+            pos = change_pos(pos, width, i)
+
+
 
 
 def post_move(maze_url, move):
